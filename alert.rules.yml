@@ -1,0 +1,37 @@
+# ============================================================
+# alert.rules.yml – Prometheus Alerting Rules
+# ============================================================
+
+groups:
+  - name: trend-app-alerts
+    rules:
+
+      # Alert if app pod is down
+      - alert: AppPodDown
+        expr: up{job="trend-app"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Trend App is DOWN"
+          description: "The trend-app pod has been unreachable for more than 1 minute."
+
+      # Alert if node CPU is over 80%
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance)(rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is above 80% for more than 2 minutes."
+
+      # Alert if node memory is over 85%
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 85
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High Memory usage on {{ $labels.instance }}"
+          description: "Memory usage is above 85% for more than 2 minutes."

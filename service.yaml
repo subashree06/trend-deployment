@@ -1,0 +1,22 @@
+# ============================================================
+# kubernetes/service.yaml
+# AWS LoadBalancer Service – exposes app on port 80 externally
+# ============================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: trend-app-service
+  namespace: default
+  labels:
+    app: trend-app
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "classic"
+spec:
+  type: LoadBalancer
+  selector:
+    app: trend-app
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80          # External (LoadBalancer) port
+      targetPort: 3000  # Container port
