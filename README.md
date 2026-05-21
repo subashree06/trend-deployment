@@ -113,3 +113,62 @@ docker push subashree06/trendify-app:latest
 ![DockerHub](./screenshots/dockerhub.png)
 
 ---
+
+### Phase 5 — Kubernetes (AWS EKS)
+
+#### 📌 Objective
+Deploy application in Kubernetes cluster on AWS EKS.
+
+#### 🧱 Steps
+
+**1. Setup EKS Cluster**
+
+```bash
+eksctl create cluster --name trend-cluster --region us-east-1 --version 1.31 --nodegroup-name linux-nodes --node-type t3.micro --nodes 1 --managed
+```
+
+![EKS Cluster Setup](./screenshots/Screenshot%20(566).png)
+
+---
+
+**2. Create Deployment YAML**
+
+**3. Create Service YAML (LoadBalancer)**
+
+#### 📄 Files
+- `deployment.yaml`
+- `service.yaml`
+
+---
+
+**4. Deploy**
+
+```bash
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+```
+
+**5. Verify**
+
+```bash
+kubectl get pods
+kubectl get svc
+```
+
+#### Kubernetes Screenshots
+![Kubernetes 1](./screenshots/Screenshot%20(567).png)
+![Kubernetes 2](./screenshots/Screenshot%20(568).png)
+
+---
+
+**6. Access Application**
+
+🌐 http://a823951091d3146818a89f5f0d989b76-72434611.us-east-1.elb.amazonaws.com/
+
+#### Application Screenshots
+![App 1](./screenshots/Screenshot%20(569).png)
+![App 2](./screenshots/Screenshot%20(570).png)
+![App 3](./screenshots/Screenshot%20(577).png)
+![App 4](./screenshots/Screenshot%20(580).png)
+
+---
