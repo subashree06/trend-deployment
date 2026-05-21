@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🚀 Trend Deployment — DevOps Project
 
 ## 📌 Project Overview
@@ -172,3 +173,47 @@ kubectl get svc
 ![App 4](./screenshots/Screenshot%20(580).png)
 
 ---
+---
+
+### Phase 6 — Version Control (GitHub)
+
+#### 🎯 Objective
+Push complete project code to GitHub repository.
+
+#### 🛠 Steps
+- Push code to GitHub repository
+- Add .gitignore
+- Add .dockerignore
+
+#### 🚀 Commands
+
+```bash
+git init
+git remote remove origin
+git remote add origin https://github.com/subashree06/trend-deployment.git
+git remote -v
+git add .
+git commit -m "Initial commit: Trend app full DevOps project"
+git branch -M main
+git push -u origin main --force
+```
+
+#### Version Control Screenshots
+![GitHub 1](./screenshots/Screenshot%20(582).png)
+![GitHub 2](./screenshots/Screenshot%20(583).png)
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
