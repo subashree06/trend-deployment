@@ -1,88 +1,44 @@
-# 🛍️ Trend App – DevOps Deployment
+# 🚀 Trend Deployment — DevOps Project
 
-Production deployment of the **Trend** React e-commerce application using a full DevOps pipeline on AWS.
-
----
-
-## 📁 Repository Structure
-
-```
-trend-deployment/
-│
-├── Dockerfile               ← Build & serve the app on port 3000
-├── docker-compose.yml       ← Local testing with one command
-├── Jenkinsfile              ← 7-stage CI/CD pipeline
-├── prometheus.yml           ← Prometheus scrape config
-├── alert.rules.yml          ← Prometheus alerting rules
-├── .gitignore
-├── .dockerignore
-│
-├── dist/                    ← Pre-built React app (ready to deploy)
-│   ├── index.html
-│   └── assets/
-│
-├── terraform/
-│   ├── main.tf              ← VPC, EC2 (Jenkins), EKS cluster
-│   └── terraform-commands.md
-│
-├── kubernetes/
-│   ├── deployment.yaml      ← 2-replica app deployment
-│   ├── service.yaml         ← AWS LoadBalancer service
-│   ├── monitoring.yaml      ← Prometheus + Grafana
-│   └── kubectl-commands.md
-│
-├── jenkins/
-│   └── jenkins-setup.md     ← Plugin install + pipeline setup guide
-│
-└── screenshots/             ← Deployment proof screenshots
-```
+## 📌 Project Overview
+This repository contains the DevOps pipeline for the Trend application including Infrastructure Provisioning, Containerization, and Kubernetes Deployment.
 
 ---
 
-## 🏗️ Architecture
-
-```
-  Developer (Windows VS Code)
-          │
-          │  git push
-          ▼
-      GitHub Repo
-          │
-          │  Webhook trigger
-          ▼
-   Jenkins (EC2 t2.micro)
-          │
-    ┌─────┴──────────────────────────┐
-    │  1. Checkout from GitHub       │
-    │  2. docker build               │
-    │  3. Test container             │
-    │  4. docker push → DockerHub    │
-    │  5. kubectl → EKS connect      │
-    │  6. kubectl apply → Deploy     │
-    │  7. Print LoadBalancer URL     │
-    └────────────────────────────────┘
-          │
-          ▼
-    AWS EKS Cluster
-    ├── trend-app Pod ×2  ──→  LoadBalancer ──→  Public URL
-    └── monitoring/
-            ├── Prometheus
-            └── Grafana Dashboard
-```
+## ✅ Steps Completed
+- Infrastructure Provisioning using Terraform
+- Containerization using Docker
+- Kubernetes Deployment on AWS EKS
 
 ---
 
 ## 🚀 Deployment Phases
 
 ### Phase 1 — Clone Repository
+
 ```bash
-git clone https://github.com/YOUR_USERNAME/trend-deployment.git
-cd trend-deployment
+git clone https://github.com/Vennilavanguvi/Trend.git
+cd Trend
 ```
+
+#### Application Repository Screenshots
+![App Repo 1](./screenshots/Screenshot%20(528).png)
+![App Repo 2](./screenshots/Screenshot%20(529).png)
 
 ---
 
 ### Phase 2 — Docker (Build & Run Locally)
+
+#### 🎯 Objective
+Dockerize the React application for consistent deployment.
+
+#### 🛠 Steps
+- Create a Dockerfile
+- Build Docker image
+- Run container using Docker
+
+#### 🔧 Commands
+
 ```bash
 # Build image
 docker build -t trend-app .
@@ -93,119 +49,67 @@ docker run -d -p 3000:3000 --name trend-app trend-app
 # OR use docker-compose
 docker-compose up
 ```
-✅ Open browser → **http://localhost:3000**
+
+✅ Open browser → http://localhost:3000
+
+#### Docker Screenshots
+![Docker 1](./screenshots/Screenshot%20(533).png)
+![Docker 2](./screenshots/Screenshot%20(534).png)
+![Docker 3](./screenshots/Screenshot%20(535).png)
 
 ---
 
-### Phase 3 — Push to DockerHub
-```bash
-docker tag trend-app YOUR_DOCKERHUB_USERNAME/trend-app:latest
-docker login
-docker push YOUR_DOCKERHUB_USERNAME/trend-app:latest
-```
+### Phase 3 — Terraform Infrastructure (AWS)
 
----
+#### 🎯 Objective
+Provision AWS infrastructure using Terraform.
 
-### Phase 4 — Terraform (AWS Infrastructure)
+#### 🏗 Resources Created
+- VPC
+- Subnets
+- Security Groups
+- IAM Roles
+- EC2 Instance (Jenkins Server)
+- AWS EKS Cluster
+
+#### 🔧 Commands
+
 ```bash
-cd terraform
 terraform init
-terraform apply -var="key_name=trend-key" -auto-approve
-```
-⏱️ ~15 minutes. Creates: VPC, Subnets, IGW, EC2 (Jenkins), EKS Cluster.
-
----
-
-### Phase 5 — Jenkins Setup
-1. Open `http://<jenkins_ip>:8080`
-2. Install plugins: Docker Pipeline, Kubernetes, GitHub Integration
-3. Add DockerHub credential (ID: `dockerhub-credentials`)
-4. Create Pipeline job → point to `Jenkinsfile`
-5. Set up GitHub Webhook → auto-build on every push
-
-> See [jenkins/jenkins-setup.md](jenkins/jenkins-setup.md) for full steps.
-
----
-
-### Phase 6 — Kubernetes (Verify)
-```bash
-aws eks update-kubeconfig --region us-east-1 --name trend-app
-kubectl get nodes          # 2 nodes Ready
-kubectl get pods           # 2 pods Running
-kubectl get svc            # Copy EXTERNAL-IP → live app URL
+terraform plan
+terraform apply
 ```
 
----
-
-### Phase 7 — Monitoring (Prometheus + Grafana)
-```bash
-kubectl apply -f kubernetes/monitoring.yaml
-kubectl get svc -n monitoring   # Get Grafana IP
-```
-Login: `admin / admin123` → Import dashboard ID **3119**
-
----
-
-## 🔁 CI/CD Pipeline Stages
-
-| # | Stage | What Happens |
-|---|-------|-------------|
-| 1 | Checkout | Pull latest code from GitHub |
-| 2 | Build | `docker build` creates container image |
-| 3 | Test | Spin up container, verify it starts |
-| 4 | Push | Push versioned image to DockerHub |
-| 5 | Configure | Connect kubectl to EKS cluster |
-| 6 | Deploy | Rolling update via `kubectl apply` |
-| 7 | Verify | Print public LoadBalancer URL |
-
-> **Auto-trigger**: Every `git push` fires a new build via GitHub Webhook.
+#### Terraform Screenshots
+![Terraform Init](./screenshots/terraform.png)
+![Terraform Plan](./screenshots/terraform%20(2).png)
+![Terraform Apply 3](./screenshots/terraform(3).png)
+![Terraform Apply 4](./screenshots/terraform(4).png)
+![Terraform Apply 5](./screenshots/terraform(5).png)
+![Terraform Apply 6](./screenshots/terraform(6).png)
 
 ---
 
-## ⚙️ Before You Start — Replace These Values
+### Phase 4 — DockerHub (Push Image)
 
-In **`Jenkinsfile`** (line 10–11):
-```groovy
-DOCKERHUB_USERNAME = 'YOUR_DOCKERHUB_USERNAME'
-url: 'https://github.com/YOUR_GITHUB_USERNAME/trend-deployment.git'
-```
+#### 🎯 Objective
+Create DockerHub repository and push Docker image.
 
-In **`kubernetes/deployment.yaml`** (line 28):
-```yaml
-image: YOUR_DOCKERHUB_USERNAME/trend-app:latest
-```
+#### 🛠 Steps
+- Create DockerHub repository
+- Push Docker image
 
----
-
-## 💰 AWS Cost Estimate
-
-| Resource | Free Tier | Cost/hr |
-|----------|-----------|---------|
-| EC2 t2.micro (Jenkins) | ✅ Yes | $0 |
-| EKS Cluster | ❌ No | ~$0.10 |
-| EKS Nodes t3.small ×2 | ❌ No | ~$0.05 each |
-| Classic LoadBalancer | ❌ No | ~$0.025 |
-
-> ⚠️ **Run `terraform destroy` after submission to stop charges!**
-
----
-
-## 🛑 Teardown
+#### 🔧 Commands
 
 ```bash
-kubectl delete -f kubernetes/
-kubectl delete -f kubernetes/monitoring.yaml
-cd terraform && terraform destroy -var="key_name=trend-key" -auto-approve
+docker login
+docker tag trendify-app:latest subashree06/trendify-app:latest
+docker push subashree06/trendify-app:latest
 ```
 
+#### DockerHub Screenshots
+![DockerHub Image](./screenshots/03-dockerhub-image.png.png)
+![DockerHub Push](./screenshots/03-dockerhub-push.png.png)
+![DockerHub](./screenshots/dockerhub.png)
+
 ---
-
-## 📸 Screenshots
-
-See [screenshots/](screenshots/) folder for deployment proof.
-
----
-
-## 🛠️ Tech Stack
-
-`React` · `Docker` · `DockerHub` · `Terraform` · `AWS VPC` · `AWS EC2` · `AWS EKS` · `Jenkins` · `Kubernetes` · `Prometheus` · `Grafana` · `GitHub Webhooks`
