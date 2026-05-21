@@ -1,0 +1,9 @@
+.git
+.gitignore
+*.md
+terraform/
+kubernetes/
+jenkins/
+screenshots/
+*.log
+*.pem
