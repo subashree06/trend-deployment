@@ -62,12 +62,22 @@ pipeline {
             }
         }
 
-        stage('5 - Configure kubectl') {
-            steps {
-                echo 'Connecting kubectl to EKS...'
-                sh """
-                    aws eks update-kubeconfig --region ${AWS_REGION} --name ${EKS_CLUSTER}
-                    kubectl get nodes
+       stage('5 - Configure kubectl') {
+    steps {
+        withCredentials([
+            string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID'),
+            string(credentialsId: 'aws-secret-key', variable: 'AWS_SECRET_ACCESS_KEY')
+        ]) {
+            sh '''
+                aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+                aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+                aws configure set default.region ap-south-1
+
+                aws eks update-kubeconfig --region ap-south-1 --name trend-app
+            '''
+        }
+    }
+}
                 """
             }
         }
