@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: trend-app
-          image: YOUR_DOCKERHUB_USERNAME/trend-app:latest   # ← CHANGE THIS
+          image: subashree06/trendify-app:latest   # ← CHANGE THIS
           ports:
             - containerPort: 3000
           resources:
