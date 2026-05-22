@@ -86,7 +86,6 @@ pipeline {
             steps {
                 echo 'Deploying to Kubernetes...'
                 sh """
-                    sed -i 's|YOUR_DOCKERHUB_USERNAME/trendify-app:latest|${FULL_IMAGE}|g' deployment.yaml
                     kubectl apply -f deployment.yaml
                     kubectl apply -f service.yaml
                     kubectl rollout status deployment/trend-app --timeout=120s
