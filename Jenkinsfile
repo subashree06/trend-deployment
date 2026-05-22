@@ -7,7 +7,7 @@ pipeline {
         IMAGE_TAG          = "${BUILD_NUMBER}"
         FULL_IMAGE         = "${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}"
         LATEST_IMAGE       = "${DOCKERHUB_USERNAME}/${IMAGE_NAME}:latest"
-        AWS_REGION         = 'us-east-1'
+        AWS_REGION         = 'ap-south-1'
         EKS_CLUSTER        = 'trend-app'
     }
 
@@ -35,10 +35,12 @@ pipeline {
             steps {
                 echo 'Testing container...'
                 sh """
+                    docker rm -f trend-test || true
                     docker run -d --name trend-test -p 3001:3000 ${FULL_IMAGE}
                     sleep 8
                     docker ps | grep trend-test
-                    docker stop trend-test && docker rm trend-test
+                    docker stop trend-test || true
+                    docker rm trend-test || true
                     echo "Test passed!"
                 """
             }
@@ -48,12 +50,12 @@ pipeline {
             steps {
                 echo 'Pushing to DockerHub...'
                 withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-credentials',
+                    credentialsId: 'dockerhub-creds',
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     sh """
-                        echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
                         docker push ${FULL_IMAGE}
                         docker push ${LATEST_IMAGE}
                         echo "Pushed: ${FULL_IMAGE}"
@@ -62,23 +64,20 @@ pipeline {
             }
         }
 
-       stage('5 - Configure kubectl') {
-    steps {
-        withCredentials([
-            string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID'),
-            string(credentialsId: 'aws-secret-key', variable: 'AWS_SECRET_ACCESS_KEY')
-        ]) {
-            sh '''
-                aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-                aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-                aws configure set default.region ap-south-1
+        stage('5 - Configure kubectl') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'aws-secret-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    sh """
+                        aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+                        aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+                        aws configure set default.region ${AWS_REGION}
 
-                aws eks update-kubeconfig --region ap-south-1 --name trend-app
-            '''
-        }
-    }
-}
-                """
+                        aws eks update-kubeconfig --region ${AWS_REGION} --name ${EKS_CLUSTER}
+                    """
+                }
             }
         }
 
@@ -100,17 +99,24 @@ pipeline {
                 sh """
                     sleep 30
                     kubectl get svc trend-app-service
+
                     LB=\$(kubectl get svc trend-app-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-                    echo "APP URL: http://\${LB}"
+                    echo "APP URL: http://\$LB"
                 """
             }
         }
     }
 
     post {
-        success { echo 'Pipeline succeeded! Trend app is live!' }
-        failure { echo 'Pipeline failed. Check the logs.' }
-        always  {
+        success {
+            echo 'Pipeline succeeded! Trend app is live!'
+        }
+
+        failure {
+            echo 'Pipeline failed. Check logs.'
+        }
+
+        always {
             sh 'docker logout || true'
             sh 'docker image prune -f || true'
         }
