@@ -203,8 +203,77 @@ git push -u origin main --force
 ![GitHub 2](./screenshots/Screenshot%20(583).png)
 
 ---
+## 🔁 Phase 6 – Jenkins CI/CD Pipeline
 
+### 🚀 Pipeline Flow
 
+GitHub → Jenkins → Build → Docker Image → DockerHub → Kubernetes (EKS)
+
+### 📌 Features
+- Auto build on every commit
+- Docker image creation
+- Push to DockerHub
+- Deploy to AWS EKS
+
+### ⚙️ Jenkins Pipeline Screenshots
+
+![Jenkins 1](screenshots/screenshot(584).png)
+![Jenkins 2](screenshots/screenshot(585).png)
+![Jenkins 3](screenshots/screenshot(586).png)
+![Jenkins 4](screenshots/screenshot(587).png)
+![Jenkins 5](screenshots/screenshot(588).png)
+![Jenkins 6](screenshots/screenshot(589).png)
+![Jenkins 7](screenshots/screenshot(590).png)
+![Jenkins 8](screenshots/screenshot(591).png)
+![Jenkins 9](screenshots/screenshot(592).png)
+![Jenkins 10](screenshots/screenshot(593).png)
+![Jenkins 11](screenshots/screenshot(594).png)
+![Jenkins 12](screenshots/screenshot(595).png)
+
+## 📊 Phase 7 – Monitoring (Prometheus + Grafana)
+
+### 📌 Tools Used
+- Prometheus
+- Grafana
+
+### 📈 Metrics Monitored
+- CPU Usage
+- Memory Usage
+- Pod Health
+- Node Status
+
+### 📸 Monitoring Screenshots
+
+![Monitoring 1](screenshots/Screenshot (608).png)
+![Monitoring 2](screenshots/Screenshot (609).png)
+![Monitoring 3](screenshots/Screenshot (610).png)
+![Monitoring 4](screenshots/Screenshot (611).png)
+![Monitoring 5](screenshots/Screenshot (612).png)
+![Monitoring 6](screenshots/Screenshot (614).png)
+![Monitoring 7](screenshots/Screenshot (615).png)
+![Monitoring 8](screenshots/Screenshot (616).png)
+![Monitoring 9](screenshots/Screenshot (617).png)
+![Monitoring 10](screenshots/Screenshot (618).png)
+![Monitoring 11](screenshots/Screenshot (619).png)
+![Monitoring 12](screenshots/Screenshot (620).png)
+![Monitoring 13](screenshots/Screenshot (621).png)
+
+## 🛠️ Tech Stack
+
+| Technology | Purpose |
+|------------|---------|
+| React + Vite | Frontend application |
+| Docker | Containerization |
+| DockerHub | Container registry |
+| Terraform | Infrastructure as Code |
+| AWS VPC | Networking |
+| AWS EC2 | Jenkins server |
+| AWS EKS | Kubernetes cluster |
+| Jenkins | CI/CD automation |
+| Kubernetes | Container orchestration |
+| Prometheus | Metrics collection |
+| Grafana | Monitoring dashboards |
+| GitHub | Version control + Webhooks |
 
 
 
