@@ -13,42 +13,34 @@ pipeline {
 
     stages {
 
-        stage('1 - Checkout') {
+        stage('Checkout') {
             steps {
-                echo 'Cloning repository...'
                 git branch: 'main',
                     url: 'https://github.com/subashree06/trend-deployment.git'
             }
         }
 
-        stage('2 - Build Docker Image') {
+        stage('Build Docker Image') {
             steps {
-                echo 'Building Docker image...'
                 sh """
                     docker build -t ${FULL_IMAGE} -t ${LATEST_IMAGE} .
-                    echo "Built: ${FULL_IMAGE}"
                 """
             }
         }
 
-        stage('3 - Test Container') {
+        stage('Test Container') {
             steps {
-                echo 'Testing container...'
                 sh """
-                    docker rm -f trend-test || true
                     docker run -d --name trend-test -p 3001:3000 ${FULL_IMAGE}
-                    sleep 8
-                    docker ps | grep trend-test
+                    sleep 10
                     docker stop trend-test || true
                     docker rm trend-test || true
-                    echo "Test passed!"
                 """
             }
         }
 
-        stage('4 - Push to DockerHub') {
+        stage('Docker Login & Push') {
             steps {
-                echo 'Pushing to DockerHub...'
                 withCredentials([usernamePassword(
                     credentialsId: 'dockerhub-credentials',
                     usernameVariable: 'DOCKER_USER',
@@ -58,13 +50,12 @@ pipeline {
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
                         docker push ${FULL_IMAGE}
                         docker push ${LATEST_IMAGE}
-                        echo "Pushed: ${FULL_IMAGE}"
                     """
                 }
             }
         }
 
-        stage('5 - Configure kubectl') {
+        stage('Configure kubectl') {
             steps {
                 withCredentials([
                     string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID'),
@@ -81,44 +72,29 @@ pipeline {
             }
         }
 
-        stage('6 - Deploy to EKS') {
+        stage('Deploy to EKS') {
             steps {
-                echo 'Deploying to Kubernetes...'
                 sh """
                     kubectl apply -f deployment.yaml
                     kubectl apply -f service.yaml
-                    kubectl rollout status deployment/trend-app --timeout=120s
-                    echo "Deployment complete!"
+                    kubectl rollout status deployment/trend-app --timeout=180s
                 """
             }
         }
 
-        stage('7 - Get App URL') {
+        stage('Get URL') {
             steps {
-                echo 'Getting LoadBalancer URL...'
                 sh """
-                    sleep 30
+                    sleep 20
                     kubectl get svc trend-app-service
-
-                    LB=\$(kubectl get svc trend-app-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-                    echo "APP URL: http://\$LB"
                 """
             }
         }
     }
 
     post {
-        success {
-            echo 'Pipeline succeeded! Trend app is live!'
-        }
-
-        failure {
-            echo 'Pipeline failed. Check logs.'
-        }
-
         always {
-            sh 'docker logout || true'
-            sh 'docker image prune -f || true'
+            sh "docker system prune -f || true"
         }
     }
 }
