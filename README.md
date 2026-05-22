@@ -244,19 +244,21 @@ GitHub → Jenkins → Build → Docker Image → DockerHub → Kubernetes (EKS)
 
 ### 📸 Monitoring Screenshots
 
-![Monitoring 1](screenshots/Screenshot (608).png)
-![Monitoring 2](screenshots/Screenshot (609).png)
-![Monitoring 3](screenshots/Screenshot (610).png)
-![Monitoring 4](screenshots/Screenshot (611).png)
-![Monitoring 5](screenshots/Screenshot (612).png)
-![Monitoring 6](screenshots/Screenshot (614).png)
-![Monitoring 7](screenshots/Screenshot (615).png)
-![Monitoring 8](screenshots/Screenshot (616).png)
-![Monitoring 9](screenshots/Screenshot (617).png)
-![Monitoring 10](screenshots/Screenshot (618).png)
-![Monitoring 11](screenshots/Screenshot (619).png)
-![Monitoring 12](screenshots/Screenshot (620).png)
-![Monitoring 13](screenshots/Screenshot (621).png)
+## 📊 Phase 7 – Monitoring (Prometheus + Grafana)
+
+![Monitoring 1](screenshots/Screenshot%20%28608%29.png)
+![Monitoring 2](screenshots/Screenshot%20%28609%29.png)
+![Monitoring 3](screenshots/Screenshot%20%28610%29.png)
+![Monitoring 4](screenshots/Screenshot%20%28611%29.png)
+![Monitoring 5](screenshots/Screenshot%20%28612%29.png)
+![Monitoring 6](screenshots/Screenshot%20%28614%29.png)
+![Monitoring 7](screenshots/Screenshot%20%28615%29.png)
+![Monitoring 8](screenshots/Screenshot%20%28616%29.png)
+![Monitoring 9](screenshots/Screenshot%20%28617%29.png)
+![Monitoring 10](screenshots/Screenshot%20%28618%29.png)
+![Monitoring 11](screenshots/Screenshot%20%28619%29.png)
+![Monitoring 12](screenshots/Screenshot%20%28620%29.png)
+![Monitoring 13](screenshots/Screenshot%20%28621%29.png)
 
 ## 🛠️ Tech Stack
 
