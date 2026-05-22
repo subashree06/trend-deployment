@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # ============================================================
+=======
+
+>>>>>>> f4bdab9 (Update Dockerfile)
 # Dockerfile – Trend App
 # Serves the pre-built dist/ folder using 'serve' on port 3000
-# ============================================================
+
 
 FROM node:18-alpine
 
